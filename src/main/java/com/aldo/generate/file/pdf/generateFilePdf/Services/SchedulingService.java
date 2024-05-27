@@ -21,8 +21,8 @@ public class SchedulingService {
         this.hashService = hashService;
     }
 
-    @Scheduled(cron = ("0 0 0 * * *")) // 0(Segundo), 0(Minuto), 0(Hora), 0(Dia), 0(Mês) e 0(Ano)
-    //@Scheduled(fixedDelay = 30000) // Aqui você pode escolher os segundos
+    //@Scheduled(cron = ("0 0 0 * * *")) // 0(Segundo), 0(Minuto), 0(Hora), 0(Dia), 0(Mês) e 0(Ano)
+    @Scheduled(fixedDelay = 30000) // Aqui você pode escolher os segundos
     public DocumentTable incrementNumberDocument() {
         Integer maxNumber = Optional.ofNullable(tableRepository.findMaxNumber()).orElse(0);
         int newNumber = maxNumber + 1;

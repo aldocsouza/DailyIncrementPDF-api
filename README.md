@@ -1,15 +1,19 @@
 ## DailyPDFGenerator-API
 
-É uma API muito simples baseada em Spring Boot, projetada para automatizar o incremento diário de uma coluna de banco de dados e gerar dados PDF. O projeto usa a anotação @Scheduler para executar uma tarefa agendada à meia-noite todos os dias, incrementando uma coluna específica no banco de dados em +1. Além disso, a API disponibiliza um endpoint que, ao ser acessado, gera um arquivo PDF contendo uma tabela com os dados de “Número de Orientação” e “Data de Emissão”.
+É uma API muito simples baseada em Spring Boot, projetada para testar biblíotecas para utilização em projetos futuros na automatização no incremento diário de uma coluna de banco de dados e gerar dados PDF. O projeto usa a anotação @Scheduler para executar uma tarefa agendada à meia-noite todos os dias, incrementando +1 na coluna number no banco de dados. Além disso, a API disponibiliza um endpoint que, ao ser acessado, gera um arquivo PDF contendo uma tabela com os dados de “Número de Orientação” e “Data de Emissão”, que com base neles, será gerado um código Hash 256 e um código de barras no arquivo PDF.
 
 Este projeto é ideia minha para resolver um problema específico: a necessidade de atualizações automatizadas diárias e a geração de um arquivo PDF atualizado com os dados de atualização do dia. Ao automatizar esses processos, a API garante que os dados sejam atualizados com precisão e estejam prontamente disponíveis em um formato PDF fácil de usar.
+
+## Aviso
+Esta é uma API bem simples, portanto não contém validações e DTOs, mas futuramente poderá ser implementado.
 
 ## Funcionalidades
 
 - **Incremento Diário:** Um método agendado que executa a cada meia-noite, incrementando em +1 a coluna do banco de dados.
 - **Banco de Dados em Memória:** Utilização do H2 Database para facilitar o desenvolvimento e testes.
 - **Dependências Essenciais:** Inclui dependências como Spring Web, Spring Dev Tools, e H2 Database para fornecer a funcionalidade completa do projeto.
-- **Geração de PDF com iText:** Utiliza a biblioteca iText para gerar relatórios em PDF com um formato tabular
+- **Geração de PDF com iText:** Utiliza a biblioteca iText para gerar relatórios em PDF com um formato tabular.
+- **Gerar Código de Barras com a lib Barbecue:** Utiliza a chave Hash contida no banco de dados para gerar um código de barras.
 
 ## Tecnologias Utilizadas
 
@@ -19,6 +23,7 @@ Este projeto é ideia minha para resolver um problema específico: a necessidade
   - Spring Data JPA
   - H2 Database
   - iText PDF
+  - Barbecue
 
 ## Pré-requisitos
 
@@ -72,16 +77,17 @@ A cada meia-noite, a aplicação executa um método agendado que incrementa a co
             this.tableRepository = tableRepository;
         }
     
-        //Aqui você pode mudar para o horário que você desejar
-        @Scheduled(cron = ("0 0 0 * * *"))
+        @Scheduled(cron = ("0 0 0 * * *")) // 0(Segundo), 0(Minuto), 0(Hora), 0(Dia), 0(Mês) e 0(Ano)
+        //@Scheduled(fixedDelay = 30000) // Aqui você pode escolher os segundos
         public DocumentTable incrementNumberDocument() {
             Integer maxNumber = Optional.ofNullable(tableRepository.findMaxNumber()).orElse(0);
             int newNumber = maxNumber + 1;
-            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime data = LocalDateTime.now();
     
             DocumentTable table = new DocumentTable();
             table.setNumber(newNumber);
-            table.setDate(now);
+            table.setDate(data);
+            table.setHash(hashService.generateValidationCode(table));
     
             return tableRepository.save(table);
         }

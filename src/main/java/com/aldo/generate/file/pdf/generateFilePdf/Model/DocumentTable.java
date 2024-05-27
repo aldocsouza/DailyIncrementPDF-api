@@ -20,10 +20,14 @@ public class DocumentTable {
     @Column(name = "emission_date", nullable = false)
     private LocalDateTime date;
 
-    public DocumentTable(Long id, Integer number, LocalDateTime date) {
+    @Column(name = "hash", nullable = false)
+    private String hash;
+
+    public DocumentTable(Long id, Integer number, LocalDateTime date, String hash) {
         this.id = id;
         this.number = number;
         this.date = date;
+        this.hash = hash;
     }
 
     public DocumentTable() {
@@ -51,5 +55,13 @@ public class DocumentTable {
 
     public void setDate(LocalDateTime date) {
         this.date = date;
+    }
+
+    public String getHash(){
+        return hash;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
     }
 }

@@ -19,8 +19,6 @@ import java.util.logging.Logger;
 @Service
 public class PdfService {
 
-    private static final Logger logger = Logger.getLogger(PdfService.class.getName());
-
     private DocumentTableRepository documentTableRepository;
 
     public PdfService(DocumentTableRepository documentTableRepository) {
@@ -30,19 +28,7 @@ public class PdfService {
     public byte[] generatePdf() {
 
         Integer dt = documentTableRepository.findMaxNumber();
-
-        if (dt == null) {
-            logger.warning("maxNumber está vazio.");
-            throw new IllegalStateException("maxNumber está vazio. A tabela está vazia.");
-        }
-
         List<DocumentTable> find = documentTableRepository.findByNumber(dt);
-
-        if (find == null || find.isEmpty()) {
-            logger.warning("Não foi encontrado dados com o número" + dt);
-            throw new IllegalStateException("Não foi encontrado dados com o número" + dt);
-        }
-
         DocumentTable doct = find.get(0);
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -97,6 +83,8 @@ public class PdfService {
         table.addCell(" ");
         table.addCell(" ");
         document.add(table);
+
+        document.add(new Paragraph(doct.getHash()).setMargins(250, 10, 10, 185));
 
         document.close();
 

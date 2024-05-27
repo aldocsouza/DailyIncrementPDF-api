@@ -6,7 +6,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-public class GenerateFilePdfApplication {
+public class  GenerateFilePdfApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(GenerateFilePdfApplication.class, args);

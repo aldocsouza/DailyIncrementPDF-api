@@ -1,8 +1,11 @@
 ## DailyPDFGenerator-API
 
-É uma API muito simples baseada em Spring Boot, projetada para automatizar o incremento diário de uma coluna de banco de dados e gerar dados PDF. O projeto usa a anotação @Scheduler para executar uma tarefa agendada à meia-noite todos os dias, incrementando uma coluna específica no banco de dados em +1. Além disso, a API disponibiliza um endpoint que, ao ser acessado, gera um arquivo PDF contendo uma tabela com os dados de “Número de Orientação” e “Data de Emissão”.
+É uma API muito simples baseada em Spring Boot, projetada para automatizar o incremento diário de uma coluna de banco de dados e gerar dados PDF. O projeto usa a anotação @Scheduler para executar uma tarefa agendada à meia-noite todos os dias, incrementando uma coluna específica no banco de dados em +1. Além disso, a API disponibiliza um endpoint que, ao ser acessado, gera um arquivo PDF contendo uma tabela com os dados de “Número de Orientação” e “Data de Emissão”, que com base neles, será gerado um código Hash 256 no arquivo PDF.
 
 Este projeto é ideia minha para resolver um problema específico: a necessidade de atualizações automatizadas diárias e a geração de um arquivo PDF atualizado com os dados de atualização do dia. Ao automatizar esses processos, a API garante que os dados sejam atualizados com precisão e estejam prontamente disponíveis em um formato PDF fácil de usar.
+
+## Aviso
+Esta é uma API bem simples, portanto não contém validações e DTOs, mas futuramente poderá ser implementado.
 
 ## Funcionalidades
 
@@ -72,16 +75,17 @@ A cada meia-noite, a aplicação executa um método agendado que incrementa a co
             this.tableRepository = tableRepository;
         }
     
-        //Aqui você pode mudar para o horário que você desejar
-        @Scheduled(cron = ("0 0 0 * * *"))
+        @Scheduled(cron = ("0 0 0 * * *")) // 0(Segundo), 0(Minuto), 0(Hora), 0(Dia), 0(Mês) e 0(Ano)
+        //@Scheduled(fixedDelay = 30000) // Aqui você pode escolher os segundos
         public DocumentTable incrementNumberDocument() {
             Integer maxNumber = Optional.ofNullable(tableRepository.findMaxNumber()).orElse(0);
             int newNumber = maxNumber + 1;
-            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime data = LocalDateTime.now();
     
             DocumentTable table = new DocumentTable();
             table.setNumber(newNumber);
-            table.setDate(now);
+            table.setDate(data);
+            table.setHash(hashService.generateValidationCode(table));
     
             return tableRepository.save(table);
         }

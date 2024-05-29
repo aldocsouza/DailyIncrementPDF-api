@@ -13,9 +13,9 @@ public class BarCodeService {
 
     private static final Font BARCODE_TEXT_FONT = new Font("Serif", Font.PLAIN, 14);
 
-    public static BufferedImage generateEAN13BarcodeImage(String barcodeText) throws Exception {
+    public static BufferedImage generateCode128BarcodeImage(String barcodeText) throws Exception {
         System.out.println(barcodeText);
-        Barcode barcode = BarcodeFactory.createCode128A(barcodeText);
+        Barcode barcode = BarcodeFactory.createCode128(barcodeText);
         System.out.println(barcode);
         barcode.setFont(BARCODE_TEXT_FONT);
 

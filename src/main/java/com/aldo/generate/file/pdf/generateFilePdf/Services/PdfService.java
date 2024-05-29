@@ -1,8 +1,9 @@
 package com.aldo.generate.file.pdf.generateFilePdf.Services;
 
+import com.aldo.generate.file.pdf.generateFilePdf.DTOs.DocumentTableDTO;
+import com.aldo.generate.file.pdf.generateFilePdf.DTOs.Mappers.DocumentTableMapper;
 import com.aldo.generate.file.pdf.generateFilePdf.Model.DocumentTable;
 import com.aldo.generate.file.pdf.generateFilePdf.Repository.DocumentTableRepository;
-import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -18,24 +19,25 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.logging.Logger;
 
 @Service
 public class PdfService {
 
-    private DocumentTableRepository documentTableRepository;
+    private final DocumentTableRepository documentTableRepository;
+    private final DocumentTableMapper documentTableMapper;
 
-    public PdfService(DocumentTableRepository documentTableRepository) {
+    public PdfService(DocumentTableRepository documentTableRepository, DocumentTableMapper documentTableMapper) {
         this.documentTableRepository = documentTableRepository;
+        this.documentTableMapper = documentTableMapper;
     }
 
     public byte[] generatePdf() {
         try {
                 Integer dt = documentTableRepository.findMaxNumber();
                 List<DocumentTable> find = documentTableRepository.findByNumber(dt);
-                DocumentTable doct = find.get(0);
+                DocumentTableDTO doct = documentTableMapper.toDTO(find.get(0));
 
-                BufferedImage barcodeImage = BarCodeService.generateEAN13BarcodeImage(doct.getHash());
+                BufferedImage barcodeImage = BarCodeService.generateCode128BarcodeImage(doct.hash());
 
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
@@ -50,9 +52,9 @@ public class PdfService {
                 Table table = new Table(UnitValue.createPercentArray(2)).useAllAvailableWidth();
                 table.setMarginTop(5);
                 table.addCell("Nome: ");
-                table.addCell("Numero da Guia: " + doct.getNumber());
+                table.addCell("Numero da Guia: " + doct.number());
                 table.addCell("Descrição: ");
-                table.addCell("Data de Emissão: " + doct.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+                table.addCell("Data de Emissão: " + doct.date().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
                 table.addCell("Value");
                 table.addCell("Hexadecimal: ");
                 document.add(table);
@@ -95,7 +97,7 @@ public class PdfService {
                 ImageIO.write(barcodeImage, "png", imageBaos);
                 Image barcodePdfImage = new Image(com.itextpdf.io.image.ImageDataFactory.create(imageBaos.toByteArray()));
                 document.add(barcodePdfImage);
-                document.add(new Paragraph(doct.getHash()).setMargins(20, 10, 10, 185));
+                document.add(new Paragraph(doct.hash()).setMargins(20, 10, 10, 185));
 
 
 

@@ -1,19 +1,18 @@
 package com.aldo.generate.file.pdf.generateFilePdf.Services;
 
-import com.aldo.generate.file.pdf.generateFilePdf.Model.DocumentTable;
+import com.aldo.generate.file.pdf.generateFilePdf.DTOs.DocumentTableDTO;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Service
 public class HashService {
 
-    public String generateValidationCode(DocumentTable documentTable) {
-        String concatenation = documentTable.getNumber() + documentTable.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+    public String generateValidationCode(DocumentTableDTO documentTableDTO) {
+        String concatenation = documentTableDTO.number() + documentTableDTO.date().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
         String sha256Hash = generateSha256(concatenation);
 
         return sha256Hash;

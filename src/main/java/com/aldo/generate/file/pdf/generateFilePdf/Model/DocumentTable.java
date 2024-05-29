@@ -23,8 +23,7 @@ public class DocumentTable {
     @Column(name = "hash", nullable = false)
     private String hash;
 
-    public DocumentTable(Long id, Integer number, LocalDateTime date, String hash) {
-        this.id = id;
+    public DocumentTable(Integer number, LocalDateTime date, String hash) {
         this.number = number;
         this.date = date;
         this.hash = hash;

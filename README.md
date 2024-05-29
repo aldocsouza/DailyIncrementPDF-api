@@ -5,7 +5,8 @@
 Este projeto é ideia minha para resolver um problema específico: a necessidade de atualizações automatizadas diárias e a geração de um arquivo PDF atualizado com os dados de atualização do dia. Ao automatizar esses processos, a API garante que os dados sejam atualizados com precisão e estejam prontamente disponíveis em um formato PDF fácil de usar.
 
 ## Aviso
-Esta é uma API bem simples, portanto não contém validações e DTOs, mas futuramente poderá ser implementado.
+Esta é uma API bem simples, portanto não contém validações, mas futuramente poderá ser implementado.
+É um projeto com o intuíto de práticar novas ferramentas como Agendador de Tarefas, Gerador de PDF, Hash Code e Bar code.
 
 ## Funcionalidades
 

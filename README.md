@@ -22,8 +22,8 @@ Esta é uma API bem simples, portanto não contém validações e DTOs, mas futu
   - Spring Dev Tools
   - Spring Data JPA
   - H2 Database
-  - iText PDF
-  - Barbecue
+  - [iText PDF](https://github.com/itext)
+  - Barbecue - [Artigo Baeldung](https://www.baeldung.com/java-generating-barcodes-qr-codes)
 
 ## Pré-requisitos
 
